@@ -1,0 +1,30 @@
+version: "3"
+
+volumes:
+  mongo_data:
+
+networks:
+  db:
+
+services:
+  mongo:
+    image: mongo:3.6.4
+    ports:
+      - 27017:27017
+    volumes:
+      - "mongo_data:/data/db"
+    networks:
+      - db
+    restart: always
+  web:
+    image: web
+    build: .
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 3000:3000
+    networks:
+      - db
+    depends_on:
+      - mongo
+    command: npm run start
